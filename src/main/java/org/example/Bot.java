@@ -33,7 +33,7 @@ public class Bot {
 
         int tokenCount = 0;
         while (tokenCount <75) {
-            Thread.sleep(10000);
+            Thread.sleep(120000);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1));
             WebElement button1 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), 'Next Chapter')]")));
