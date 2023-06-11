@@ -9,7 +9,7 @@ import java.time.Duration;
 
 public class Bot {
     private static final String CHROME_USER_DATA_DIR = "C:\\Users\\SHOWTER\\AppData\\Local\\Google\\Chrome\\User Data";
-    private static final String NOVEL_URL = "https://hostednovel.com/novel/chaotic-sword-god/chapter-528";
+    private static final String NOVEL_URL = "https://hostednovel.com/novel/chaotic-sword-god/chapter-555";
     private static final double SCROLL_PERCENTAGE = 0.15;
     private static final int TOKEN_COUNT_LIMIT = 25;
     private static final long PAGE_LOAD_TIMEOUT_SECONDS = 30;
@@ -24,6 +24,7 @@ public class Bot {
 
         driver.get(NOVEL_URL);
         waitForPageLoad(driver);
+        Thread.sleep(2000);
 
         long pageHeight = getPageHeight(js);
         long scrollOffset = (long) (pageHeight * SCROLL_PERCENTAGE);
