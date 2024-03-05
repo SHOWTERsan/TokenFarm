@@ -13,14 +13,14 @@ public class Bot {
     private static final String CHROME_USER_DATA_DIR = "C:\\Users\\Александр\\AppData\\Local\\Google\\Chrome\\User Data";
     private static String NOVEL_URL;
     private static final double SCROLL_PERCENTAGE = 0.15;
-    private static final int TOKEN_COUNT_LIMIT = 30;
+    private static final int TOKEN_COUNT_LIMIT = 45;
     private static final long PAGE_LOAD_TIMEOUT_SECONDS = 30;
     private static final long SCROLL_WAIT_MILLISECONDS = 2000;
     private static final String PAGE_HEIGHT_FETCH_SCRIPT = "return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);";
     private static final String PAGE_SCROLL_SCRIPT = "window.scrollTo(0, arguments[0]);";
     private static final String DOCUMENT_READY_STATE_CHECK_SCRIPT = "return document.readyState";
     private static final String DOCUMENT_READY_STATE_COMPLETE = "complete";
-
+    private static Thread adBlockerHandlerThread;
     private static void handleAdblockerModal(WebDriver driver) {
         while (true) {
             try {
@@ -29,7 +29,7 @@ public class Bot {
                 WebElement closeButton = modal.findElement(By.className("es7erd"));
                 closeButton.click();
             } catch (TimeoutException e) {
-                System.out.println("No adblocker modal found");
+//                System.out.println("No adblocker modal found");
             }
 
             try {
@@ -47,7 +47,9 @@ public class Bot {
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         // Start a new thread to handle the adblocker modal
-        new Thread(() -> handleAdblockerModal(driver)).start();
+        adBlockerHandlerThread = new Thread(() -> handleAdblockerModal(driver));
+        adBlockerHandlerThread.setName("AdBlockerHandlerThread");
+        adBlockerHandlerThread.start();
 
         automateBrowser(driver, js);
     }
@@ -96,8 +98,9 @@ public class Bot {
         Thread.sleep(SCROLL_WAIT_MILLISECONDS);
         scrollPage(js, scrollPosition);
         Thread.sleep(90000);
+
         WebElement nextChapterButton = waitForElementToBeClickable(driver, By.xpath("//a[contains(text(), 'Next Chapter ›')]"));
-        nextChapterButton.click();
+        js.executeScript("arguments[0].click();", nextChapterButton);
     }
 
     private static void waitForPageLoad(WebDriver driver) {
